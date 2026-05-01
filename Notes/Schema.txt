@@ -1,0 +1,5 @@
+1- How One Shipment Have More Than One Status
+2- How Client Don't Have Any Address Details
+3- How One Vehicle Have More Than One Driver
+4- Zone Entity Will Deleted.
+ 

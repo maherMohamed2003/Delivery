@@ -11,7 +11,6 @@ namespace DeliveryProject.Models
         public int StatusID { get; set; }
         public string StatusValue { get; set; }
         public DateTime ChangeAt { get; set; }
-
         public int ShipmentID { get; set; }
         public Shipment shipment { get; set; }
 

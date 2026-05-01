@@ -1,0 +1,7 @@
+1- Get all drivers
+2- get all shipments (client - destination - status - driver name )
+3- driver status is (available - on trip)
+4- get all drivers (id - name - phone - vehicle type - status)
+5- block driver - unblock
+6- display all driver info (id - name - license number - phone - email - vehicle info (model - status - plate number - age))
+7- get client info (name - role - address - fname - lname - email - phone) 

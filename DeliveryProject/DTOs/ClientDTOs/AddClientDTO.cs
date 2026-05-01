@@ -4,18 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeliveryProject.Models
+namespace DeliveryProject.DTOs.ClientDTOs
 {
-    public class Client 
+    public class AddClientDTO
     {
-        public int Id { get; set; }
         public string CompanyName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
-        public bool isBlocked { get; set; }
-        public int RoleID { get; set; }
-        public Role Role    { get; set; }
-        public ICollection<Shipment> shipments { get; set; }
     }
 }

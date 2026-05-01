@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace DeliveryProject.Models
 {
-    public class Driver
+    public class Driver 
     {
-        public int DriverID { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string LicenseNumber { get; set; }
-        public string status { get; set; }
-
-        public int UserID { get; set; }
-        public User user { get; set; }
-
+        public string Status { get; set; }
+        public bool isBlocked { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Phone { get; set; }
+        public int RoleID { get; set; }
+        public Role Role { get; set; }
         public int VehicleID { get; set; }
-        public Vehicle vehicle { get; set; }
-
-        public int ZoneID { get; set; }
-        public Zone zone { get; set; }
-
-        public ICollection<Shipment> shipments { get; set; }
+        public Vehicle Vehicle { get; set; }
+        public ICollection<Shipment> Shipments  { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
     }
 }

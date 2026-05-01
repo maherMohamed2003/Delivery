@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeliveryProject.Models
+namespace DeliveryProject.DTOs.ShipmentsDTOs
 {
-    public class Shipment
+    public class DisplayShipmentDetails
     {
-        public int ShipmentId { get; set; }
+        public int Id { get; set; }
         public string SenderName { get; set; }
         public string SenderAddress { get; set; }
         public string SenderPhone { get; set; }
@@ -16,13 +16,10 @@ namespace DeliveryProject.Models
         public string ReceiverAddress { get; set; }
         public string ReceiverPhone { get; set; }
         public DateTime CreateAt { get; set; }
-        public DateTime? DeliveredAt { get; set; } 
+        public DateTime? DeliveredAt { get; set; }
+        public string ClientName { get; set; }
+        public string? DriverName { get; set; }
         public decimal EGPAmount { get; set; }
-        public int ClientID { get; set; }
-        public int? Rate { get; set; }
-        public Client client { get; set; }
-        public int? DriverID { get; set; } = null;
-        public Driver driver { get; set; }
-        public ICollection<ShipmentStatus> shipmentStatuses { get; set; }
+        public string NowStatus { get; set; }
     }
 }

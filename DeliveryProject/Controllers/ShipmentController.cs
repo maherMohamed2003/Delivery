@@ -75,5 +75,13 @@ namespace DeliveryProject.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("ShipmentOverview")]
+        public async Task<IActionResult> ShipmentOverview()
+        {
+            var result = await _repo.ShipmentOverviewAsync();
+            return Ok(result);
+        }
     }
 }

@@ -181,5 +181,28 @@ namespace DeliveryProject.Repositories.ShipmentRepositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<ShipmentOverviewDTO> ShipmentOverviewAsync()
+        {
+            var totalShipments = await _context.Shipment.CountAsync();
+            var pendingShipments = await _context.Shipment.CountAsync(s => s.shipmentStatuses.OrderByDescending(x => x.ChangeAt).Select(x => x.StatusValue).FirstOrDefault() == "Pending");
+            var deliveredShipments = await _context.Shipment.CountAsync(s => s.shipmentStatuses.OrderByDescending(x => x.ChangeAt).Select(x => x.StatusValue).FirstOrDefault() == "Delivered");
+            var cancelledShipments = await _context.Shipment.CountAsync(s => s.shipmentStatuses.OrderByDescending(x => x.ChangeAt).Select(x => x.StatusValue).FirstOrDefault() == "Cancelled");
+            var assignedShipments = await _context.Shipment.CountAsync(s => s.shipmentStatuses.OrderByDescending(x => x.ChangeAt).Select(x => x.StatusValue).FirstOrDefault() == "Assigned");
+            var reveniue = _context.Shipment.Sum(x => x.EGPAmount);
+
+
+            var overview = new ShipmentOverviewDTO
+            {
+                TotalShipments = totalShipments,
+                PendingShipments = pendingShipments,
+                DeliveredShipments = deliveredShipments,
+                CancelledShipments = cancelledShipments,
+                AssignedShipments = assignedShipments,
+                TotalRevinuations = reveniue
+            };
+
+            return overview;
+        }
     }
 }

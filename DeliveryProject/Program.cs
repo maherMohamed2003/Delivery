@@ -16,14 +16,22 @@ namespace MoviesAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             // Add services to the container.
-           
+
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
             #region Dependancies
-            
+
             builder.Services.AddDbContextFile().AddRepositories();
             builder.Services.AddValidators();
 
@@ -64,9 +72,9 @@ namespace MoviesAPI
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAll");
             app.UseAuthorization();
-
-
+            app.UseAuthentication();
             app.MapControllers();
 
             app.Run();

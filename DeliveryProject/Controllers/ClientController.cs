@@ -32,7 +32,7 @@ namespace DeliveryProject.Controllers
 
 
         [HttpPost]
-        [Route("LoginAsClient")]
+        [Route("LoginAsClient")]    
         public async Task<IActionResult> LoginAsClient(ClientLoginDTO DTO)
         {
             var result = await _repo.LoginAsClientAsync(DTO);

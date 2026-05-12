@@ -85,6 +85,19 @@ namespace DeliveryProject.Repositories.DriverRepositories
             return true;
         }
 
+        public async Task<DriversOverviewDTO> DisplayDriversOverviewAsync()
+        {
+            var totalDrivers = await _context.Drivers.CountAsync();
+            var activeDrivers = await _context.Drivers.CountAsync(d => d.Status == "Avaliable");
+            var blockedDrivers = await _context.Drivers.CountAsync(d => d.isBlocked);
+            return new DriversOverviewDTO
+            {
+                TotalDrivers = totalDrivers,
+                ActiveDrivers = activeDrivers,
+                BlockedDrivers = blockedDrivers
+            };
+        }
+
         public async Task<List<DisplayNotificationDTO>> DisplayNotificationsPerDriverAsync(int id)
         {
             var notifications = await _context.Notifications.Where(x => x.DriverID == id).Select(x => new DisplayNotificationDTO{
@@ -156,24 +169,25 @@ namespace DeliveryProject.Repositories.DriverRepositories
                 return null;
             }
             var token = await _auth.GenerateTokenAsync(driver.Id, "Driver");
-            return new DriverLoginResponseDTO
+            var res = await _context.Drivers.Where(x => x.Id == driver.Id).Select(x => new DriverLoginResponseDTO
             {
-                Id = driver.Id,
-                Name = driver.Name,
-                LicenseNumber = driver.LicenseNumber,
-                Status = driver.Status,
-                Email = driver.Email,
-                Phone = driver.Phone,
-                RoleName = driver.Role.RoleName,
+                Id = x.Id,
+                Name = x.Name,
+                LicenseNumber = x.LicenseNumber,
+                Status = x.Status,
+                Email = x.Email,
+                Phone = x.Phone,
+                RoleName = x.Role.RoleName,
                 Vehicle = new DisplayVehicleDTO
                 {
-                    VehicleId = driver.Vehicle.VehicleID,
-                    VehicleType = driver.Vehicle.VehicleType,
-                    PlateNumber = driver.Vehicle.PlateNumber,
-                    Status = driver.Vehicle.Status
+                    VehicleId = x.Vehicle.VehicleID,
+                    VehicleType = x.Vehicle.VehicleType,
+                    PlateNumber = x.Vehicle.PlateNumber,
+                    Status = x.Vehicle.Status
                 },
                 Token = token
-            };
+            }).FirstOrDefaultAsync();
+            return res;
         }
 
         public async Task<DisplayShipmentDetails> MarkShipmentAsDeliveredAsync(int shipmentId)
@@ -278,6 +292,32 @@ namespace DeliveryProject.Repositories.DriverRepositories
 
         }
 
+        public async Task<DisplayNotificationDTO> SendNotificationAsync(SendNotificationDTO dto)
+        {
+            var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.Id == dto.DriverId);
+            if (driver == null)
+            {
+                return null;
+            }
+            var notification = new Notification
+            {
+                DriverID = dto.DriverId,
+                Title = dto.Title,
+                Message = dto.Message,
+                CreatedAt = DateTime.Now,
+                IsRead = false
+            };
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            return new DisplayNotificationDTO
+            {
+                Id = notification.Id,
+                Message = notification.Message,
+                CreatedAt = notification.CreatedAt,
+                IsRead = notification.IsRead
+            };
+        }
+
         public async Task<bool> UnBlockDriver(int id)
         {
             var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.Id == id);
@@ -315,24 +355,25 @@ namespace DeliveryProject.Repositories.DriverRepositories
 
             await _context.SaveChangesAsync();
 
-            return new DisplayDriverDTO
+            var res = await _context.Drivers.Where(d => d.Id == driver.Id).Select(d => new DisplayDriverDTO
             {
-                Id = driver.Id,
-                Name = driver.Name,
-                LicenseNumber = driver.LicenseNumber,
-                Status = driver.Status,
-                isBlocked = driver.isBlocked,
-                Email = driver.Email,
-                Phone = driver.Phone,
-                RoleName = driver.Role.RoleName,
+                Id = d.Id,
+                Name = d.Name,
+                LicenseNumber = d.LicenseNumber,
+                Status = d.Status,
+                isBlocked = d.isBlocked,
+                Email = d.Email,
+                Phone = d.Phone,
+                RoleName = d.Role.RoleName,
                 Vehicle = new DisplayVehicleDTO
                 {
-                    VehicleId = driver.Vehicle.VehicleID,
-                    VehicleType = driver.Vehicle.VehicleType,
-                    PlateNumber = driver.Vehicle.PlateNumber,
-                    Status = driver.Vehicle.Status
+                    VehicleId = d.Vehicle.VehicleID,
+                    VehicleType = d.Vehicle.VehicleType,
+                    PlateNumber = d.Vehicle.PlateNumber,
+                    Status = d.Vehicle.Status
                 }
-            };
+            }).FirstOrDefaultAsync();
+            return res;
         }
     }
 }

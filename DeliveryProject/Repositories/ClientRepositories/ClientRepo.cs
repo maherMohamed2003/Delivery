@@ -118,7 +118,7 @@ namespace DeliveryProject.Repositories.ClientRepositories
 
         public async Task<ClientLoginResponseDTO> LoginAsClientAsync(ClientLoginDTO DTO)
         {
-            var client = await _context.Clients.Include(x => x.Role).FirstOrDefaultAsync(x => x.Email == DTO.Email);
+            var client = await _context.Clients.FirstOrDefaultAsync(x => x.Email == DTO.Email);
             
             if (client == null || client.isBlocked)
                 return null;  
@@ -130,7 +130,7 @@ namespace DeliveryProject.Repositories.ClientRepositories
             
             var token = await _auth.GenerateTokenAsync(client.Id,client.Role.RoleName);
 
-            return new ClientLoginResponseDTO
+            var res = await _context.Clients.Where(x => x.Email == DTO.Email).Select(x => new ClientLoginResponseDTO
             {
                 ID = client.Id,
                 Email = client.Email,
@@ -138,7 +138,8 @@ namespace DeliveryProject.Repositories.ClientRepositories
                 Phone = client.Phone,
                 Role = client.Role.RoleName,
                 Token = token
-            };
+            }).FirstOrDefaultAsync();
+            return res;
         }
 
         public async Task<bool> UnBlockedClientAsync(int id)

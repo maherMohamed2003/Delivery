@@ -1,4 +1,5 @@
 ﻿using DeliveryProject.DTOs.DriverDTOs;
+using DeliveryProject.DTOs.NotificationDTOs;
 using DeliveryProject.Repositories.DriverRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -135,6 +136,26 @@ namespace DeliveryProject.Controllers
                 return NotFound("Driver not found.");
             }
             return Ok("Driver deleted successfully.");
+        }
+
+        [HttpGet]
+        [Route("DrviersOverview")]
+        public async Task<IActionResult> DriversOverview()
+        {
+            var result = await _driverRepo.DisplayDriversOverviewAsync();
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("SendNotification")]
+        public async Task<IActionResult> SendNotification(SendNotificationDTO dto)
+        {
+            var result = await _driverRepo.SendNotificationAsync(dto);
+            if (result == null)
+            {
+                return BadRequest("Failed to send notification.");
+            }
+            return Ok(result);
         }
     }
 }

@@ -275,6 +275,7 @@ namespace DeliveryProject.Repositories.DriverRepositories
             return new DisplayDriverDTO
             {
                 Id = newDriver.Id,
+                Name = newDriver.Name,
                 LicenseNumber = newDriver.LicenseNumber,
                 Status = newDriver.Status,
                 Email = newDriver.Email,

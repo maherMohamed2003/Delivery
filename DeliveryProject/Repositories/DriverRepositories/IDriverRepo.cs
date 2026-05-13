@@ -19,6 +19,8 @@ namespace DeliveryProject.Repositories.DriverRepositories
         public Task<bool> DeleteDriverAsync(int id);
         public Task<DriversOverviewDTO> DisplayDriversOverviewAsync();
         public Task<DisplayNotificationDTO> SendNotificationAsync(SendNotificationDTO dto);
+        public Task<GetOneDriverOverviewDTO> GetOneDriverOverviewAsync(int driverId);
+        public Task<List<DisplayShipmentDetails>> GetDriverShipmentsAsync(int driverId);
 
     }
 }

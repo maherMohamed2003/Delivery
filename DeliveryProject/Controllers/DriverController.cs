@@ -94,7 +94,7 @@ namespace DeliveryProject.Controllers
                 return NotFound("Driver not found.");
             }
             return Ok("Driver unblocked successfully.");
-            
+
         }
 
         [HttpGet]
@@ -157,5 +157,30 @@ namespace DeliveryProject.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetOneDriverOverview/{driverId}")]
+        public async Task<IActionResult> GetOneDriverOverview(int driverId)
+        {
+            var result = await _driverRepo.GetOneDriverOverviewAsync(driverId);
+            if (result == null)
+            {
+                return NotFound("Driver not found.");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetDriverShipments/{driverId}")]
+        public async Task<IActionResult> GetDriverShipments(int driverId)
+        {
+            var result = await _driverRepo.GetDriverShipmentsAsync(driverId);
+            if (result == null)
+            {
+                return NotFound("Driver not found.");
+            }
+            return Ok(result);
+        }
+
+        }
     }
-}

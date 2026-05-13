@@ -17,6 +17,7 @@ namespace DeliveryProject.Repositories.ShipmentRepositories
         public Task<List<DisplayShipmentDetails>> GetAllShipmentsPending();
         public Task<bool> RateTheShipmentAsync(int id, int rate);
         public Task<ShipmentOverviewDTO> ShipmentOverviewAsync();
+        public Task<List<DisplayShipmentDetails>> GetRecent5ShipmentsAsync();
 
 
     }

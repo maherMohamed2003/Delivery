@@ -59,6 +59,27 @@ namespace DeliveryProject.Repositories.ShipmentRepositories
             return shipments;
         }
 
+        public Task<List<DisplayShipmentDetails>> GetRecent5ShipmentsAsync()
+        {
+            var shipments = _context.Shipment.OrderByDescending(s => s.CreateAt).Take(5).Select(x => new DisplayShipmentDetails
+            {
+                Id = x.ShipmentId,
+                SenderAddress = x.SenderAddress,
+                SenderName = x.SenderName,
+                SenderPhone = x.SenderPhone,
+                ReceiverAddress = x.ReceiverAddress,
+                ReceiverName = x.ReceiverName,
+                ReceiverPhone = x.ReceiverPhone,
+                CreateAt = x.CreateAt,
+                DeliveredAt = x.DeliveredAt,
+                ClientName = x.client.CompanyName,
+                DriverName = x.driver.Name,
+                EGPAmount = x.EGPAmount,
+                NowStatus = x.shipmentStatuses.OrderByDescending(s => s.ChangeAt).Select(s => s.StatusValue).FirstOrDefault()
+            }).ToListAsync();
+            return shipments;
+        }
+
         public async Task<DisplayShipmentDetails> GetShipmentByIdAsync(int id)
         {
             var shipment = await _context.Shipment.Where(x => x.ShipmentId == id).Select(x => new DisplayShipmentDetails

@@ -155,6 +155,51 @@ namespace DeliveryProject.Repositories.DriverRepositories
             return driver;  
         }
 
+        public async Task<List<DisplayShipmentDetails>> GetDriverShipmentsAsync(int driverId)
+        {
+            var shipments = await _context.Shipment.Where(s => s.DriverID == driverId).Select(s => new DisplayShipmentDetails
+            {
+                Id = s.ShipmentId,
+                SenderAddress = s.SenderAddress,
+                SenderName = s.SenderName,
+                SenderPhone = s.SenderPhone,
+                ReceiverAddress = s.ReceiverAddress,
+                ReceiverName = s.ReceiverName,
+                ReceiverPhone = s.ReceiverPhone,
+                CreateAt = s.CreateAt,
+                DeliveredAt = s.DeliveredAt,
+                ClientName = s.client.CompanyName,
+                DriverName = s.driver.Name,
+                EGPAmount = s.EGPAmount,
+                NowStatus = s.shipmentStatuses.OrderByDescending(st => st.ChangeAt).FirstOrDefault().StatusValue    
+            }).ToListAsync();
+            return shipments;
+        }
+
+        public async Task<GetOneDriverOverviewDTO> GetOneDriverOverviewAsync(int driverId)
+        {
+            var totalShipments = await _context.Shipment.CountAsync(s => s.DriverID == driverId);
+            var deliveredShipments = await _context.Shipment
+                .Where(s => s.DriverID == driverId)
+                .SelectMany(s => s.shipmentStatuses)
+                .CountAsync(st => st.StatusValue == "Delivered");
+            var cancelledShipments = await _context.Shipment
+                .Where(s => s.DriverID == driverId)
+                .SelectMany(s => s.shipmentStatuses)
+                .CountAsync(st => st.StatusValue == "Cancelled");
+            var totalRevenue = await _context.Shipment
+                .Where(s => s.DriverID == driverId)
+                .SumAsync(s => s.EGPAmount);
+
+            return new GetOneDriverOverviewDTO
+            {
+                TotalShipments = totalShipments,
+                DeliveredShipments = deliveredShipments,
+                CancelledShipments = cancelledShipments,
+                TotalRevenue = totalRevenue
+            };
+        }
+
         public async Task<DriverLoginResponseDTO> Login(DriverLoginDTO login)
         {
             var driver = await _context.Drivers.Include(x => x.Vehicle).Where(x => x.Email == login.Email).FirstOrDefaultAsync();
@@ -275,6 +320,7 @@ namespace DeliveryProject.Repositories.DriverRepositories
             return new DisplayDriverDTO
             {
                 Id = newDriver.Id,
+                Name = newDriver.Name,
                 LicenseNumber = newDriver.LicenseNumber,
                 Status = newDriver.Status,
                 Email = newDriver.Email,

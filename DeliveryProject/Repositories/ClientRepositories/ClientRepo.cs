@@ -128,17 +128,17 @@ namespace DeliveryProject.Repositories.ClientRepositories
             if(result == PasswordVerificationResult.Failed)
                 return null;
             
-            var token = await _auth.GenerateTokenAsync(client.Id,client.Role.RoleName);
 
-            var res = await _context.Clients.Where(x => x.Email == DTO.Email).Select(x => new ClientLoginResponseDTO
+            var res = await _context.Clients.Where(x => x.Id == client.Id).Select(x => new ClientLoginResponseDTO
             {
-                ID = client.Id,
-                Email = client.Email,
-                CompanyName = client.CompanyName,
-                Phone = client.Phone,
-                Role = client.Role.RoleName,
-                Token = token
+                ID = x.Id,
+                Email = x.Email,
+                CompanyName = x.CompanyName,
+                Phone = x.Phone,
+                Role = x.Role.RoleName
             }).FirstOrDefaultAsync();
+            var token = await _auth.GenerateTokenAsync(res.ID,res.Role);
+            res.Token = token;
             return res;
         }
 

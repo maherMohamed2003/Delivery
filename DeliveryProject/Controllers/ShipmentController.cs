@@ -83,5 +83,14 @@ namespace DeliveryProject.Controllers
             var result = await _repo.ShipmentOverviewAsync();
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetRecent5Shipments")]
+        public async Task<IActionResult> GetRecent5Shipments()
+        {
+            var result = await _repo.GetRecent5ShipmentsAsync();
+            return Ok(result);
+
+        }
     }
 }

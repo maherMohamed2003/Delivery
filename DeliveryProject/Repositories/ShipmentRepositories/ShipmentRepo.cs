@@ -61,7 +61,7 @@ namespace DeliveryProject.Repositories.ShipmentRepositories
 
         public Task<List<DisplayShipmentDetails>> GetRecent5ShipmentsAsync()
         {
-            var shipments = _context.Shipment.OrderByDescending(s => s.CreateAt).Take(5).Select(x => new DisplayShipmentDetails
+            var shipments = _context.Shipment.OrderByDescending(s => s.CreateAt).Where(s => s.CreateAt <= DateTime.Now).Take(5).Select(x => new DisplayShipmentDetails
             {
                 Id = x.ShipmentId,
                 SenderAddress = x.SenderAddress,
